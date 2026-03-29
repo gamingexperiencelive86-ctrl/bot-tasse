@@ -120,7 +120,28 @@ process.on('uncaughtException', (error) => {
 });
 
 console.log('TOKEN:', TOKEN ? 'OK' : 'NON TROVATO');
+console.log('Avvio login Discord...');
 
-client.login(TOKEN).catch((error) => {
-  console.error('ERRORE LOGIN DISCORD:', error);
+client.on('ready', () => {
+  console.log(`ONLINE COME ${client.user.tag}`);
 });
+
+client.on('shardReady', (id) => {
+  console.log(`Shard pronta: ${id}`);
+});
+
+client.on('shardDisconnect', (event, id) => {
+  console.log(`Shard disconnessa: ${id}`, event?.code);
+});
+
+client.on('shardError', (error, id) => {
+  console.error(`Errore shard ${id}:`, error);
+});
+
+client.login(TOKEN)
+  .then(() => {
+    console.log('Login promise completata');
+  })
+  .catch((error) => {
+    console.error('ERRORE LOGIN DISCORD:', error);
+  });
